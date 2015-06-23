@@ -45,8 +45,8 @@ public class MapGenerator : MonoBehaviour
     {
         if (bubbleCounter < maxBubbles)
         {
-            int plusMinusX = Random.Range(-mapSizeX, mapSizeX);
-            int plusMinusY = Random.Range(-mapSizeY, mapSizeY);
+            int plusMinusX = Random.Range(-mapSizeX / 2, mapSizeX / 2);
+            int plusMinusY = Random.Range(-mapSizeY / 2, mapSizeY / 2);
             if (plusMinusX < 0)
             {
                 plusMinusX = -1;
@@ -63,7 +63,7 @@ public class MapGenerator : MonoBehaviour
             {
                 plusMinusY = 1;
             }
-            GameObject bubble = (GameObject)Instantiate(prefabBubble, new Vector3(Random.value * mapSizeX * plusMinusX, Random.value * mapSizeY * plusMinusY, 0), Quaternion.identity);
+            GameObject bubble = (GameObject)Instantiate(prefabBubble, new Vector3(Random.value * (mapSizeX / 2) * plusMinusX, Random.value * (mapSizeY/2) * plusMinusY, 0), Quaternion.identity);
             bubble.transform.SetParent(transform,true);
             bubbleCounter++;
         }

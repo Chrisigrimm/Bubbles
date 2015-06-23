@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
         //test = true;
     }
 
-    void Awake()
+    void Start()
     {
         rigBody = GetComponent<Rigidbody2D>();
     }
@@ -30,21 +30,14 @@ public class Player : MonoBehaviour
     #region Public
     public void movePlayer(Vector2 toPosition, float speed)
     {
-        if (!test)
-        {
-            rigBody.velocity = toPosition * (speed / rigBody.mass);
-        }
-        else
-        {
-            test = false;
-        }
+        rigBody.velocity = toPosition * (speed / rigBody.mass);
     }
     #endregion
 
     #region Private
     private void eatBubble()
     {
-        rigBody.mass += 1;
+        rigBody.mass += 2;
     }
     #endregion
     #endregion
