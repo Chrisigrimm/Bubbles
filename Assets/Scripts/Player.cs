@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class Player : MonoBehaviour
     #region Public
     #endregion
     #region Private
-    private Rigidbody rigBody;
+    private Rigidbody2D rigBody;
     private bool test = false;
     #endregion
     #endregion
@@ -16,12 +17,12 @@ public class Player : MonoBehaviour
     #region Unity-Events
     void OnCollisionEnter(Collision collision)
     {
-        test = true;
+        //test = true;
     }
 
     void Awake()
     {
-        rigBody = GetComponent<Rigidbody>();
+        rigBody = GetComponent<Rigidbody2D>();
     }
     #endregion
 
@@ -41,6 +42,10 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Private
+    private void eatBubble()
+    {
+        rigBody.mass += 1;
+    }
     #endregion
     #endregion
 }
