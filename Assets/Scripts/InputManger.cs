@@ -6,8 +6,6 @@ public class InputManger : MonoBehaviour
     #region Variables
     #region Public
     public Player player;
-    public float minSpeed = 1;
-    public float maxSpeed = 5;
     public float radiusMouse = 2;
     #endregion
     #region Private
@@ -28,10 +26,17 @@ public class InputManger : MonoBehaviour
     #region Private
     private void control()
     {
-        playerControl();
+        playerControlPC();
     }
 
-    private void playerControl()
+#region PC-Controls
+    private void playerControlPC()
+    {
+        movePlayerPC();
+        shootBubblePC();
+    }
+
+    private void movePlayerPC()
     {
         Vector2 mousePos = player.playerCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector2 playerPos = player.transform.position;
@@ -41,22 +46,33 @@ public class InputManger : MonoBehaviour
 
         if (differenceVector.sqrMagnitude > radiusMouse * radiusMouse)
         {
-            speed = maxSpeed;
+            speed = player.moveSpeedMax;
         }
         else
         {
-            if ((maxSpeed * (differenceVector.sqrMagnitude / (radiusMouse * radiusMouse))) < minSpeed)
+            if ((player.moveSpeedMax * (differenceVector.sqrMagnitude / (radiusMouse * radiusMouse))) < player.moveSpeedMin)
             {
-                speed = minSpeed;
+                speed = player.moveSpeedMin;
             }
             else
             {
-                speed = maxSpeed * (differenceVector.sqrMagnitude / (radiusMouse * radiusMouse));
+                speed = player.moveSpeedMax * (differenceVector.sqrMagnitude / (radiusMouse * radiusMouse));
             }
         }
-
-        player.movePlayer(differenceVector, speed);
+        player.movePlayer(Vector3.ClampMagnitude(differenceVector, 0.1f), speed);
     }
+
+    private void shootBubblePC()
+    {
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            Vector2 mousePos = player.playerCamera.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 playerPos = player.transform.position;
+            Vector2 differenceVector = mousePos - playerPos;
+            player.shootBubble(Vector3.ClampMagnitude(differenceVector, 0.1f));
+        }
+    }
+    #endregion
     #endregion
     #endregion
 }
