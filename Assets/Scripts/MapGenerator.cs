@@ -9,6 +9,7 @@ public class MapGenerator : MonoBehaviour
     public int mapSizeX, mapSizeY;
     public GameObject prefabBubble;
     public int maxBubbles = 2048;
+    public Transform mapBackGround;
     #endregion
     #region Private
     private int bubbleCounter;
@@ -31,6 +32,7 @@ public class MapGenerator : MonoBehaviour
     {
         generateWalls();
         generateBubbles();
+        setMapBackGroundSize();
     }
 
     private void generateBubbles()
@@ -78,7 +80,13 @@ public class MapGenerator : MonoBehaviour
 
     private void generateWalls()
     {
+        
+    }
 
+    private void setMapBackGroundSize()
+    {
+        mapBackGround.localScale = new Vector3(mapSizeX*1.5f, 1, mapSizeY*1.5f);
+        mapBackGround.GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2((mapSizeX * 1.5f)*8 , (mapSizeY * 1.5f)*8);
     }
     #endregion
     #endregion
