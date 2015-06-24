@@ -64,9 +64,16 @@ public class MapGenerator : MonoBehaviour
                 plusMinusY = 1;
             }
             GameObject bubble = (GameObject)Instantiate(prefabBubble, new Vector3(Random.value * (mapSizeX / 2) * plusMinusX, Random.value * (mapSizeY/2) * plusMinusY, 0), Quaternion.identity);
+            bubble.GetComponent<Bubble>().bubbleDestroyed.AddListener(() => { generateBubbleEvent(); });
             bubble.transform.SetParent(transform,true);
             bubbleCounter++;
         }
+    }
+
+    private void generateBubbleEvent()
+    {
+        bubbleCounter--;
+        generateBubble();
     }
 
     private void generateWalls()

@@ -89,12 +89,16 @@ public class Player : MonoBehaviour
     {
         Bubble bubble = collider.GetComponent<Bubble>();
         rigBody.mass += bubble.BubblePoints;
-        transform.DOScale((transform.localScale.x + ballGrowMult * bubble.BubblePoints), ballGrowDur).OnComplete(() => growCameraSize(bubble.BubblePoints));
+        Sequence growPlayer = DOTween.Sequence().Pause().OnComplete(() => growCameraSize(bubble.BubblePoints));
+        growPlayer.Insert(0,transform.DOScaleX(transform.localScale.x + ballGrowMult * bubble.BubblePoints, ballGrowDur));
+        growPlayer.Insert(0,transform.DOScaleY(transform.localScale.y + ballGrowMult * bubble.BubblePoints, ballGrowDur));
+        growPlayer.Restart();
         Destroy(collider.gameObject);
     }
 
     private void growCameraSize(float growAmount)
     {
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1);
         playerCamera.DOOrthoSize(playerCamera.orthographicSize + cameraOutZoomMult * growAmount, 1);
     }
 
