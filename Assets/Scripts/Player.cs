@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using System.Collections;
 using DG.Tweening;
 
@@ -25,7 +26,7 @@ public class Player : MonoBehaviour
     private bool test = false;
     private int massToSpeedCounter = 1;
     private float massToSpeedMult = 1;
-    private GameObject ignoreBubble;
+    private List<GameObject> ignoreBubblesList = new List<GameObject>();
     #endregion
     #endregion
 
@@ -37,7 +38,7 @@ public class Player : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D collider)
     {
-        if (collider.gameObject != ignoreBubble)
+        if(!ignoreBubblesList.Contains(collider.gameObject))
         {
             eatBubble(collider);
         }
@@ -57,10 +58,11 @@ public class Player : MonoBehaviour
         {
             transform.DOScale((transform.localScale.x - ballGrowMult * shootBubblePoints), ballGrowDur).OnComplete(shrinkCameraSizeShoot);
             rigBody.mass -= shootBubblePoints;
-            GameObject bubble = (GameObject)Instantiate(prefabBubble, transform.position, Quaternion.identity);
+            Vector3 bubbleShootSpawnPos = transform.position + ((GetComponent<CircleCollider2D>().radius*transform.localScale.x) * targetPos);
+            GameObject bubble = (GameObject)Instantiate(prefabBubble, bubbleShootSpawnPos, Quaternion.identity);
             bubble.GetComponent<Rigidbody2D>().AddForce(targetPos * shootSpeed, ForceMode2D.Impulse);
             bubble.GetComponent<Bubble>().BubblePoints = shootBubblePoints;
-            ignoreBubble = bubble;
+            ignoreBubblesList.Add(bubble);
             StartCoroutine(clearIgnoreBubble());
         }
     }
@@ -79,7 +81,7 @@ public class Player : MonoBehaviour
 
     private void colliderInteraction(Collider2D collider)
     {
-        if (collider.tag == "bubble" && collider.gameObject != ignoreBubble)
+        if (collider.tag == "bubble" && !ignoreBubblesList.Contains(collider.gameObject))
         {
             eatBubble(collider);
         }
@@ -110,7 +112,7 @@ public class Player : MonoBehaviour
     IEnumerator clearIgnoreBubble()
     {
         yield return new WaitForSeconds(durClearIgnBubble);
-        ignoreBubble = null;
+        ignoreBubblesList.RemoveAt(0);
     }
     #endregion
     #endregion

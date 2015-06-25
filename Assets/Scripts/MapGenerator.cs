@@ -80,13 +80,40 @@ public class MapGenerator : MonoBehaviour
 
     private void generateWalls()
     {
-        
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject wall = new GameObject();
+            BoxCollider2D collider = wall.AddComponent<BoxCollider2D>();
+            wall.name = "wall"+i;
+            if (i == 0)
+            {
+                wall.transform.position = new Vector2((mapSizeX / 2)+0.1f, 0);
+                collider.size = new Vector2(0.1f, mapSizeY);
+            }
+            else if (i == 1)
+            {
+                wall.transform.position = new Vector2((-mapSizeX / 2) - 0.1f, 0);
+                collider.size = new Vector2(0.1f, mapSizeY);
+            }
+            else if (i == 2)
+            {
+                wall.transform.position = new Vector2(0, (mapSizeY / 2) + 0.1f);
+                collider.size = new Vector2(mapSizeX, 0.1f);
+            }
+            else if (i == 3)
+            {
+                wall.transform.position = new Vector2(0, (-mapSizeY / 2) - 0.1f);
+                collider.size = new Vector2(mapSizeX, 0.1f);
+            }
+
+            wall.transform.SetParent(transform, true);
+        }
     }
 
     private void setMapBackGroundSize()
     {
-        mapBackGround.localScale = new Vector3(mapSizeX*1.5f, 1, mapSizeY*1.5f);
-        mapBackGround.GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2((mapSizeX * 1.5f)*8 , (mapSizeY * 1.5f)*8);
+        mapBackGround.localScale = new Vector3(mapSizeX/4, 1, mapSizeY/4);
+        mapBackGround.GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2(mapSizeX*2 , mapSizeY*2);
     }
     #endregion
     #endregion

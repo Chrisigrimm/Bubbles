@@ -30,6 +30,11 @@ public class Bubble : MonoBehaviour
     #endregion
 
     #region Unity-Events
+    void OnEnable()
+    {
+        GetComponent<SpriteRenderer>().color = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
+    }
+
     void OnDisable()
     {
         if (applicationRunning)
