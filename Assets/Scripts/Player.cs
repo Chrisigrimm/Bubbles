@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     #region Public
     #endregion
     #region Private
-    private Rigidbody2D rigBody;
+    private JellySprite jellySprite;
     private bool test = false;
     private int massToSpeedCounter = 1;
     private float massToSpeedMult = 1;
@@ -33,14 +33,14 @@ public class Player : MonoBehaviour
     #region Unity-Events
     void Start()
     {
-        rigBody = GetComponent<Rigidbody2D>();
+        jellySprite = GetComponent<JellySprite>(); 
     }
 
-    void OnTriggerStay2D(Collider2D collider)
+    void OnJellyTriggerStay2D(JellySprite.JellyCollider2D collider)
     {
-        if(!ignoreBubblesList.Contains(collider.gameObject))
+        if (!ignoreBubblesList.Contains(collider.Collider2D.gameObject))
         {
-            eatBubble(collider);
+            eatBubble(collider.Collider2D);
         }
     }
     #endregion
@@ -49,15 +49,15 @@ public class Player : MonoBehaviour
     #region Public
     public void movePlayer(Vector2 toPosition, float speed)
     {
-        rigBody.velocity = toPosition * massToSpeed(speed);
+        jellySprite.Velocity(toPosition * massToSpeed(speed));
     }
 
     public void shootBubble(Vector3 targetPos)
     {
-        if ((rigBody.mass/2) > shootBubblePoints)
+        if ((jellySprite.m_Mass/2) > shootBubblePoints)
         {
             transform.DOScale((transform.localScale.x - ballGrowMult * shootBubblePoints), ballGrowDur).OnComplete(shrinkCameraSizeShoot);
-            rigBody.mass -= shootBubblePoints;
+            jellySprite.m_Mass -= shootBubblePoints;
             Vector3 bubbleShootSpawnPos = transform.position + ((GetComponent<CircleCollider2D>().radius*transform.localScale.x) * targetPos);
             GameObject bubble = (GameObject)Instantiate(prefabBubble, bubbleShootSpawnPos, Quaternion.identity);
             bubble.GetComponent<Rigidbody2D>().AddForce(targetPos * shootSpeed, ForceMode2D.Impulse);
@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
     #region Private
     private float massToSpeed(float speed)
     {
-        if (rigBody.mass % (massStepSlower * massToSpeedCounter) == 0)
+        if (jellySprite.m_Mass % (massStepSlower * massToSpeedCounter) == 0)
         {
             massToSpeedCounter++;
             massToSpeedMult += setSpeedMult;
@@ -90,12 +90,16 @@ public class Player : MonoBehaviour
     private void eatBubble(Collider2D collider)
     {
         Bubble bubble = collider.GetComponent<Bubble>();
-        rigBody.mass += bubble.BubblePoints;
-        Sequence growPlayer = DOTween.Sequence().Pause().OnComplete(() => growCameraSize(bubble.BubblePoints));
+        jellySprite.m_Mass += bubble.BubblePoints;
+        transform.localScale = new Vector3(transform.localScale.x + ballGrowMult * bubble.BubblePoints, transform.localScale.y + ballGrowMult * bubble.BubblePoints,1);
+        jellySprite.updateScale(new Vector3(transform.localScale.x + ballGrowMult * bubble.BubblePoints, transform.localScale.y + ballGrowMult * bubble.BubblePoints,1));
+        /*Sequence growPlayer = DOTween.Sequence().Pause().OnComplete(() => growCameraSize(bubble.BubblePoints));
         growPlayer.Insert(0,transform.DOScaleX(transform.localScale.x + ballGrowMult * bubble.BubblePoints, ballGrowDur));
         growPlayer.Insert(0,transform.DOScaleY(transform.localScale.y + ballGrowMult * bubble.BubblePoints, ballGrowDur));
-        growPlayer.Restart();
+        growPlayer.Restart();*/
+        growCameraSize(bubble.BubblePoints);
         Destroy(collider.gameObject);
+
     }
 
     private void growCameraSize(float growAmount)
